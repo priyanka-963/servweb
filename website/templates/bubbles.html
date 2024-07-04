@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Bubbles</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: #3d3d87;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: whitesmoke;
+            flex-wrap: wrap;
+            height: 100px;
+        }
+        .header .title {
+            font-size: 1.5em;
+            flex-grow: 1;
+            color: #3d3d87;
+            font-family: "Times New Roman", Times, serif;
+        }
+        .header .logo img {
+            width: auto;
+            height: 100px;          
+        }
+        .taskbar {
+            display: flex;
+            justify-content: space-around;
+            background-color: #d4cfcf;
+            padding: 10px 0;
+            flex-wrap: wrap;
+            color: #3d3d87;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .taskbar div {
+            cursor: pointer;
+            padding: 10px;
+        }
+        .taskbar .selected {
+            border-bottom: 2px solid #d76e28;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .content .emoji {
+            font-size: 24px;
+        }
+        @media (max-width: 768px) {
+            .header .title {
+                font-size: 20px;
+                text-align: center;
+                flex-basis: 100%;
+            }
+            .taskbar div {
+                flex-basis: 100%;
+                text-align: center;
+                padding: 10px 0;
+            }
+        }
+        #chart {
+            width: 100%;
+            height: auto;
+        }
+        #backButton {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            display: none;
+        }
+
+        .bubble-container {
+            position: relative;
+            width: 100vw;
+            height: calc(100%-300px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            overflow: hidden;
+        }
+
+        .bubble {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            color: white;
+            text-align: center;
+            font-size: 1.5em;
+            position: fixed;
+            animation: float 4s ease-in-out infinite;
+            cursor: pointer;
+            transition: all 0.5s ease-in-out;
+        }
+
+        .bubble:hover {
+            transform: scale(1.1);
+        }
+
+        .bubble:hover .sub-bubble {
+            display: flex;
+            opacity: 1;
+            transform: translateY(-20px);
+        }
+
+        .sub-bubble {
+            position: fixed;
+            display: none;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.2);
+            color: white;
+            text-align: center;
+            font-size: 0.75em;
+            width: 60px;
+            height: 60px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+        }
+
+
+        .A { background-color: hsl(25, 78%, 44%); width: 200px; height: 200px; top: 40%; left: 40%; transform: translate(0%, 0%);}
+.B { background-color: hsl(179, 80%, 58%); width: 100px; height: 100px; top: 20%; left: 38%; color: #1f2e6e; }
+.C { background-color: #ffff07; width: 100px; height: 100px; top: 20%; left: 50%; color: #1f2e6e; }
+.D { background-color: #ffff07; width: 100px; height: 100px; top: 15%; left: 59%; color: #1f2e6e; }
+.E { background-color: #1f2e6e; width: 100px; height: 100px; top: 15%; left: 28%; color: white;}
+.F { background-color: hsl(180, 2%, 46%); width: 100px; height: 100px; top: 35%; left: 30%; color: #1f2e6e; }
+.G { background-color: hsl(295, 100%, 22%); width: 100px; height: 100px; top: 35%; left: 55%; color: white; }
+.H { background-color: greenyellow; width: 100px; height: 100px; top: 40%; left: 63%; color: #1f2e6e; }
+.I { background-color: #1f2e6e; width: 100px; height: 100px; top: 40%; left: 18%; color: white; }
+.J { background-color: #e94e77; width: 100px; height: 100px; top: 55%; left: 30%; color: white; }
+.K { background-color: #e94e77; width: 100px; height: 100px; top: 55%; left: 55%; color: white; }
+.L { background-color: greenyellow; width: 100px; height: 100px; top: 70%; left: 60%; color: #1f2e6e; }
+.M { background-color: hsl(295, 100%, 22%); width: 100px; height: 100px; top: 15%; left: 18%; color: white; }
+.N { background-color: #ff5f52; width: 100px; height: 100px; top: 70%; left: 38%; color: white; }
+.O { background-color: hsl(25, 78%, 44%); width: 100px; height: 100px; top: 70%; left: 50%; transform: translate(0%, 0%);}
+.P { background-color: hsl(179, 80%, 58%); width: 100px; height: 100px; top: 60%; left: 68%; color: #1f2e6e; }
+.Q { background-color: #ffff07; width: 100px; height: 100px; top: 85%; left: 68%; color: #1f2e6e; }
+.R { background-color: #ffff07; width: 100px; height: 100px; top: 80%; left: 30%; color: #1f2e6e; }
+.S { background-color: #1f2e6e; width: 100px; height: 100px; top: 5%; left: 44%; color: white;}
+.T { background-color: hsl(180, 2%, 46%); width: 100px; height: 100px; top: 22%; left: 68%; color: #1f2e6e; }
+.U { background-color: hsl(295, 100%, 22%); width: 100px; height: 100px; top: 85%; left: 20%; color: white; }
+.V { background-color: greenyellow; width: 100px; height: 100px; top: 65%; left: 20%; color: #1f2e6e; }
+.W { background-color: hsl(295, 100%, 22%); width: 100px; height: 100px; top: 85%; left: 44%; color: white; }
+.X { background-color: greenyellow; width: 100px; height: 100px; top: 85%; left: 55%; color: #1f2e6e; }
+
+        .sub-A1 { top: -20%; left: 30%; color: #1f2e6e;}
+        .sub-A2 { top: -55%; left: 60%; color: #1f2e6e;}
+        .sub-A3 { top: -20%; left: 90%; color: #1f2e6e;}
+        .sub-B1 { top: -20%; left: 10%; color: #1f2e6e; }
+        .sub-B2 { top: -40%; left: 80%; color: #1f2e6e;}
+        .sub-B3 { top: -80%; left: 60%; color: #1f2e6e; }
+        .sub-C1 { top: -20%; left: 10%; color: #1f2e6e; }
+        .sub-C2 { top: -50%; left: 40%; color: #1f2e6e; }
+        .sub-C3 { top: -20%; left: 80%; color: #1f2e6e; }
+        .sub-D1 { top: -20%; left: 10%; color: #1f2e6e; }
+        .sub-D2 { top: -20%; left: 60%; color: #1f2e6e; }
+        .sub-D3 { top: -80%; left: 60%; color: #1f2e6e; }
+        .sub-E1 { top: -20%; left: 10%; color: white; }
+        .sub-E2 { top: -60%; left: 40%; color: white; }
+        .sub-E3 { top: -20%; left: 80%; color: white; }
+        .sub-F1 { top: -20%; left: 10%; color: #1f2e6e; }
+        .sub-F2 { top: -60%; left: 40%; color: #1f2e6e; }
+        .sub-F3 { top: -20%; left: 80%; color: #1f2e6e; }
+        .sub-G1 { top: -20%; left: 10%; color: white; }
+        .sub-G2 { top: -20%; left: 60%; color: white; }
+        .sub-G3 { top: -80%; left: 60%; color: white; }
+        .sub-H1 { top: -20%; left: 10%; color: #1f2e6e; }
+        .sub-H2 { top: -60%; left: 40%; color: #1f2e6e; }
+        .sub-H3 { top: -20%; left: 80%; color: #1f2e6e; }
+        .sub-I1 { top: -20%; left: 10%; color: white; }
+        .sub-I2 { top: -20%; left: 60%; color: white; }
+        .sub-I3 { top: -80%; left: 60%; color: white; }
+        .sub-J1 { top: -20%; left: 10%; color: white; }
+        .sub-J2 { top: -60%; left: 40%; color: white; }
+        .sub-J3 { top: -20%; left: 80%; color: white; }
+        .sub-K1 { top: -20%; left: 10%; color: white; }
+        .sub-K2 { top: -60%; left: 40%; color: white; }
+        .sub-K3 { top: -20%; left: 80%; color: white; }
+        .sub-L1 { top: -20%; left: 10%; color: #1f2e6e; }
+        .sub-L2 { top: -20%; left: 60%; color: #1f2e6e; }
+        .sub-L3 { top: -80%; left: 60%; color: #1f2e6e; }
+        .sub-M1 { top: -20%; left: 10%; color: white; }
+        .sub-M2 { top: -60%; left: 40%; color: white; }
+        .sub-M3 { top: -20%; left: 80%; color: white; }
+        .sub-N1 { top: -20%; left: 10%; color: white; }
+        .sub-N2 { top: -60%; left: 40%; color: white; }
+        .sub-N3 { top: -20%; left: 80%; color: white; }
+        .sub-O1 { top: -20%; left: 10%; color: white; }
+        .sub-O2 { top: -60%; left: 40%; color: white; }
+        .sub-O3 { top: -20%; left: 80%; color: white; }
+        .sub-P1 { top: -20%; left: 10%; color: white; }
+        .sub-P2 { top: -60%; left: 40%; color: white; }
+        .sub-P3 { top: -20%; left: 80%; color: white; }
+        .sub-Q1 { top: -20%; left: 10%; color: white; }
+        .sub-Q2 { top: -60%; left: 40%; color: white; }
+        .sub-Q3 { top: -20%; left: 80%; color: white; }
+        .sub-R1 { top: -20%; left: 10%; color: white; }
+        .sub-R2 { top: -60%; left: 40%; color: white; }
+        .sub-R3 { top: -20%; left: 80%; color: white; }
+        .sub-S1 { top: -20%; left: 10%; color: white; }
+        .sub-S2 { top: -60%; left: 40%; color: white; }
+        .sub-S3 { top: -20%; left: 80%; color: white; }
+        .sub-T1 { top: -20%; left: 10%; color: white; }
+        .sub-T2 { top: -60%; left: 40%; color: white; }
+        .sub-T3 { top: -20%; left: 80%; color: white; }
+        .sub-U1 { top: -20%; left: 10%; color: white; }
+        .sub-U2 { top: -60%; left: 40%; color: white; }
+        .sub-U3 { top: -20%; left: 80%; color: white; }
+        .sub-V1 { top: -20%; left: 10%; color: white; }
+        .sub-V2 { top: -60%; left: 40%; color: white; }
+        .sub-V3 { top: -20%; left: 80%; color: white; }
+        .sub-W1 { top: -20%; left: 10%; color: white; }
+        .sub-W2 { top: -60%; left: 40%; color: white; }
+        .sub-W3 { top: -20%; left: 80%; color: white; }
+        .sub-X1 { top: -20%; left: 10%; color: white; }
+        .sub-X2 { top: -60%; left: 40%; color: white; }
+        .sub-X3 { top: -20%; left: 80%; color: white; }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title"><h1>A.I.S.H. - SASTRA'S Threat Intel Platform</h1></div>
+        <div class="logo"><img src="{{url_for('static',filename='images/im.png')}}" alt="Logo"></div>
+    </div>
+    <div class="taskbar">
+        <div id="apt" class="selected" onclick="showContent('apt')">Advanced Persistent Threat</div>
+        <div id="insider" onclick="showContent('insider')">Insider Threat</div>
+        <div id="scada" onclick="showContent('scada')">SCADA Threat</div>
+        <div id="hw" onclick="showContent('hw')">H/W Threat</div>
+    </div>
+    <div id="content" class="content">
+        <div id="apt-content">
+    <div class="bubble-container">
+        <div class="bubble A" onclick="showBubble('A')">
+            APT
+            <div class="sub-bubble sub-A1" onclick="showSubBubble(event, 'A1')">MUDDY WATER</div>
+            <div class="sub-bubble sub-A2" onclick="showSubBubble(event, 'A2')">HIDDEN COBRA</div>
+            <div class="sub-bubble sub-A3" onclick="showSubBubble(event, 'A3')">WIPER</div>
+        
+        </div>
+        <div class="bubble B" onclick="showBubble('B')">
+            APT1
+            <div class="sub-bubble sub-B1" onclick="showSubBubble(event, 'B1')">B1</div>
+            <div class="sub-bubble sub-B2" onclick="showSubBubble(event, 'B2')">B2</div>
+        </div>
+        <div class="bubble C" onclick="showBubble('C')">
+            APT10
+            <div class="sub-bubble sub-C1" onclick="showSubBubble(event, 'C1')">C1</div>
+            <div class="sub-bubble sub-C2" onclick="showSubBubble(event, 'C2')">C2</div>
+        </div>
+        <div class="bubble D" onclick="showBubble('D')">
+            APT12
+            <div class="sub-bubble sub-D1" onclick="showSubBubble(event, 'D1')">D1</div>
+            <div class="sub-bubble sub-D2" onclick="showSubBubble(event, 'D2')">D2</div>
+        </div>
+        <div class="bubble E" onclick="showBubble('E')">
+            APT15
+            <div class="sub-bubble sub-E1" onclick="showSubBubble(event, 'E1')">E1</div>
+            <div class="sub-bubble sub-E2" onclick="showSubBubble(event, 'E2')">E2</div>
+        </div>
+        <div class="bubble F" onclick="showBubble('F')">
+            APT17
+            <div class="sub-bubble sub-F1" onclick="showSubBubble(event, 'F1')">F1</div>
+            <div class="sub-bubble sub-F2" onclick="showSubBubble(event, 'F2')">F2</div>
+        </div>
+        <div class="bubble G" onclick="showBubble('G')">
+            APT27
+            <div class="sub-bubble sub-G1" onclick="showSubBubble(event, 'G1')">G1</div>
+            <div class="sub-bubble sub-G2" onclick="showSubBubble(event, 'G2')">G2</div>
+        </div>
+        <div class="bubble H" onclick="showBubble('H')">
+            APT30
+            <div class="sub-bubble sub-H1" onclick="showSubBubble(event, 'H1')">H1</div>
+            <div class="sub-bubble sub-H2" onclick="showSubBubble(event, 'H2')">H2</div>
+        </div>
+        <div class="bubble I" onclick="showBubble('I')">
+            APT31
+            <div class="sub-bubble sub-I1" onclick="showSubBubble(event, 'I1')">I1</div>
+            <div class="sub-bubble sub-I2" onclick="showSubBubble(event, 'I2')">I2</div>
+        </div>
+        <div class="bubble J" onclick="showBubble('J')">
+            APT28
+            <div class="sub-bubble sub-J1" onclick="showSubBubble(event, 'J1')">J1</div>
+            <div class="sub-bubble sub-J2" onclick="showSubBubble(event, 'J2')">J2</div>
+        </div>
+        <div class="bubble K" onclick="showBubble('K')">
+            APT29
+            <div class="sub-bubble sub-K1" onclick="showSubBubble(event, 'K1')">K1</div>
+            <div class="sub-bubble sub-K2" onclick="showSubBubble(event, 'K2')">K2</div>
+        </div>
+        <div class="bubble L" onclick="showBubble('L')">
+            APT32
+            <div class="sub-bubble sub-L1" onclick="showSubBubble(event, 'L1')">L1</div>
+            <div class="sub-bubble sub-L2" onclick="showSubBubble(event, 'L2')">L2</div>
+        </div>
+        <div class="bubble M" onclick="showBubble('M')">
+            APT33
+            <div class="sub-bubble sub-M1" onclick="showSubBubble(event, 'M1')">M1</div>
+            <div class="sub-bubble sub-M2" onclick="showSubBubble(event, 'M2')">M2</div>
+        </div>
+        <div class="bubble N" onclick="showBubble('N')">
+            APT34
+            <div class="sub-bubble sub-M1" onclick="showSubBubble(event, 'M1')">M1</div>
+            <div class="sub-bubble sub-M2" onclick="showSubBubble(event, 'M2')">M2</div>
+        </div>
+    </div>
+    <div class="bubble O" onclick="showBubble('O')">
+        APT35
+    </div>
+    <div class="bubble P" onclick="showBubble('P')">
+        APT36
+        <div class="sub-bubble sub-B1" onclick="showSubBubble(event, 'B1')">B1</div>
+        <div class="sub-bubble sub-B2" onclick="showSubBubble(event, 'B2')">B2</div>
+    </div>
+    <div class="bubble Q" onclick="showBubble('Q')">
+        APT37
+        <div class="sub-bubble sub-C1" onclick="showSubBubble(event, 'C1')">C1</div>
+        <div class="sub-bubble sub-C2" onclick="showSubBubble(event, 'C2')">C2</div>
+    </div>
+    <div class="bubble R" onclick="showBubble('R')">
+        APT38
+        <div class="sub-bubble sub-D1" onclick="showSubBubble(event, 'D1')">D1</div>
+        <div class="sub-bubble sub-D2" onclick="showSubBubble(event, 'D2')">D2</div>
+    </div>
+    <div class="bubble S" onclick="showBubble('S')">
+        APT39
+        <div class="sub-bubble sub-E1" onclick="showSubBubble(event, 'E1')">E1</div>
+        <div class="sub-bubble sub-E2" onclick="showSubBubble(event, 'E2')">E2</div>
+    </div>
+    <div class="bubble T" onclick="showBubble('T')">
+        APT40
+        <div class="sub-bubble sub-F1" onclick="showSubBubble(event, 'F1')">F1</div>
+        <div class="sub-bubble sub-F2" onclick="showSubBubble(event, 'F2')">F2</div>
+    </div>
+    <div class="bubble U" onclick="showBubble('U')">
+        APT41
+        <div class="sub-bubble sub-G1" onclick="showSubBubble(event, 'G1')">G1</div>
+        <div class="sub-bubble sub-G2" onclick="showSubBubble(event, 'G2')">G2</div>
+    </div>
+    <div class="bubble V" onclick="showBubble('V')">
+        APT42
+        <div class="sub-bubble sub-H1" onclick="showSubBubble(event, 'H1')">H1</div>
+        <div class="sub-bubble sub-H2" onclick="showSubBubble(event, 'H2')">H2</div>
+    </div>
+    <div class="bubble W" onclick="showBubble('W')">
+        APT43
+        <div class="sub-bubble sub-H1" onclick="showSubBubble(event, 'H1')">H1</div>
+        <div class="sub-bubble sub-H2" onclick="showSubBubble(event, 'H2')">H2</div>
+    </div>
+    <div class="bubble X" onclick="showBubble('X')">
+        APT44
+        <div class="sub-bubble sub-H1" onclick="showSubBubble(event, 'H1')">H1</div>
+        <div class="sub-bubble sub-H2" onclick="showSubBubble(event, 'H2')">H2</div>
+    </div>
+    <button id="backButton" onclick="showAllBubbles()">Back</button>
+</div>
+<div id="insider-content" style="display:none;">
+    Insider Threat Content
+</div>
+<div id="scada-content" style="display:none;">
+    SCADA Threat Content
+</div>
+<div id="hw-content" style="display:none;">
+    H/W Threat Content
+</div>
+</div>
+    <script>
+        function showContent(tab) {
+            document.querySelectorAll('.taskbar div').forEach(div => div.classList.remove('selected'));
+            document.querySelectorAll('.content div').forEach(div => div.style.display = 'none');
+            document.getElementById(tab).classList.add('selected');
+            document.getElementById(tab + '-content').style.display = 'block';
+        }
+        function showBubble(bubbleClass) {
+            const bubbles = document.querySelectorAll('.bubble');
+            const subBubbles = document.querySelectorAll(`.bubble.${bubbleClass} .sub-bubble`);
+
+            bubbles.forEach(bubble => {
+                if (bubble.classList.contains(bubbleClass)) {
+                    bubble.style.transform = 'scale(1.5)';
+                    bubble.style.animation = 'zoomIn 0.5s forwards';
+                    subBubbles.forEach(subBubble => {
+                        subBubble.style.display = 'flex';
+                    });
+                } else {
+                    bubble.style.display = 'none';
+                }
+            });
+
+            document.getElementById('backButton').style.display = 'block';
+        }
+
+        function showSubBubble(event, subBubbleClass) {
+            event.stopPropagation();
+            const subBubbles = document.querySelectorAll('.sub-bubble');
+            subBubbles.forEach(subBubble => {
+                if (subBubble.classList.contains(`sub-${subBubbleClass}`)) {
+                    subBubble.style.transform = 'scale(2)';
+                } else {
+                    subBubble.style.display = 'none';
+                }
+            });
+
+            document.getElementById('backButton').style.display = 'block';
+        }
+
+        function showAllBubbles() {
+            const bubbles = document.querySelectorAll('.bubble');
+            const subBubbles = document.querySelectorAll('.sub-bubble');
+
+            bubbles.forEach(bubble => {
+                bubble.style.transform = 'scale(1)';
+                bubble.style.display = 'flex';
+                bubble.style.animation = 'zoomOut 0.5s forwards';
+            });
+
+            subBubbles.forEach(subBubble => {
+                subBubble.style.transform = 'scale(1)';
+                subBubble.style.display = 'none';
+            });
+
+            document.getElementById('backButton').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

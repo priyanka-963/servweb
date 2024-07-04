@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Bubbles</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: #3d3d87;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: whitesmoke;
+            flex-wrap: wrap;
+            height: 100px;
+        }
+        .header .title {
+            font-size: 1.5em;
+            flex-grow: 1;
+            color: #3d3d87;
+            font-family: "Times New Roman", Times, serif;
+        }
+        .header .logo img {
+            width: auto;
+            height: 100px;
+        }
+        .taskbar {
+            display: flex;
+            justify-content: space-around;
+            background-color: #d4cfcf;
+            padding: 10px 0;
+            flex-wrap: wrap;
+            color: #3d3d87;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .taskbar div {
+            cursor: pointer;
+            padding: 10px;
+        }
+        .taskbar .selected {
+            border-bottom: 2px solid #d76e28;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .content .emoji {
+            font-size: 24px;
+        }
+        @media (max-width: 768px) {
+            .header .title {
+                font-size: 20px;
+                text-align: center;
+                flex-basis: 100%;
+            }
+            .taskbar div {
+                flex-basis: 100%;
+                text-align: center;
+                padding: 10px 0;
+            }
+        }
+        #chart {
+            width: 100%;
+            height: auto;
+        }
+        #backButton {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            display: none;
+        }
+
+        .bubble-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            overflow: hidden;
+        }
+
+        .bubble {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            color: white;
+            text-align: center;
+            font-size: 1.5em;
+            position: absolute;
+            animation: float 4s ease-in-out infinite;
+            cursor: pointer;
+            transition: all 0.5s ease-in-out;
+        }
+
+        .bubble:hover {
+            transform: scale(1.1);
+        }
+
+        .bubble:hover .sub-bubble {
+            display: flex;
+            opacity: 1;
+            transform: translateY(-20px);
+        }
+
+        .sub-bubble {
+            position: absolute;
+            display: none;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.2);
+            color: white;
+            text-align: center;
+            font-size: 0.75em;
+            width: 60px;
+            height: 60px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+        }
+
+        .A { background-color: hsl(25, 78%, 44%); width: 200px; height: 200px; top: 40%; left: 40%; transform: translate(0%, 0%);}
+        .B { background-color: hsl(179, 80%, 58%); width: 100px; height: 100px; top: 20%; left: 38%; color: #1f2e6e; }
+        .C { background-color: #ffff07; width: 100px; height: 100px; top: 20%; left: 50%; color: #1f2e6e; }
+        .D { background-color: #ffff07; width: 100px; height: 100px; top: 15%; left: 59%; color: #1f2e6e; }
+        .E { background-color: #1f2e6e; width: 100px; height: 100px; top: 15%; left: 28%; color: white;}
+        .F { background-color: hsl(180, 2%, 46%); width: 100px; height: 100px; top: 35%; left: 30%; color: #1f2e6e; }
+        .G { background-color: hsl(295, 100%, 22%); width: 100px; height: 100px; top: 35%; left: 55%; color: white; }
+        .H { background-color: greenyellow; width: 100px; height: 100px; top: 40%; left: 63%; color: #1f2e6e; }
+        .I { background-color: #1f2e6e; width: 100px; height: 100px; top: 40%; left: 18%; color: white; }
+        .J { background-color: #e94e77; width: 100px; height: 100px; top: 55%; left: 30%; color: white; }
+        .K { background-color: #e94e77; width: 100px; height: 100px; top: 55%; left: 55%; color: white; }
+        .L { background-color: greenyellow; width: 100px; height: 100px; top: 70%; left: 60%; color: #1f2e6e; }
+        .M { background-color: hsl(295, 100%, 22%); width: 100px; height: 100px; top: 15%; left: 18%; color: white; }
+        .N { background-color: #ff5f52; width: 100px; height: 100px; top: 70%; left: 38%; color: white; }
+        .O { background-color: hsl(25, 78%, 44%); width: 100px; height: 100px; top: 70%; left: 50%; transform: translate(0%, 0%);}
+        .P { background-color: hsl(179, 80%, 58%); width: 100px; height: 100px; top: 60%; left: 68%; color: #1f2e6e; }
+        .Q { background-color: #ffff07; width: 100px; height: 100px; top: 85%; left: 68%; color: #1f2e6e; }
+        .R { background-color: #ffff07; width: 100px; height: 100px; top: 80%; left: 30%; color: #1f2e6e; }
+        .S { background-color: #1f2e6e; width: 100px; height: 100px; top: 5%; left: 44%; color: white;}
+        .T { background-color: hsl(180, 2%, 46%); width: 100px; height: 100px; top: 22%; left: 68%; color: #1f2e6e; }
+        .U { background-color: hsl(295, 100%, 22%); width: 100px; height: 100px; top: 85%; left: 20%; color: white; }
+        .V { background-color: greenyellow; width: 100px; height: 100px; top: 65%; left: 20%; color: #1f2e6e; }
+        .W { background-color: hsl(295, 100%, 22%); width: 100px; height: 100px; top: 85%; left: 44%; color: white; }
+        .X { background-color: greenyellow; width: 100px; height: 100px; top: 85%; left: 55%; color: #1f2e6e; }
+
+        .sub-A1 { top: -20%; left: 30%; color: #1f2e6e;}
+        .sub-A2 { top: -55%; left: 60%; color: #1f2e6e;}
+        .sub-A3 { top: 80%; left: 70%; color: #1f2e6e;}
+        .sub-A4 { top: 80%; left: -10%; color: #1f2e6e;}
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title"><h1>A.I.S.H. - SASTRA'S Threat Intel Platform</h1></div>
+        <div class="logo"><img src="{{url_for('static',filename='images/im.png')}}" alt="Logo"></div>
+    </div>
+    <div class="taskbar">
+        <div id="apt" class="selected" onclick="showContent('apt')">Advanced Persistent Threat</div>
+        <div id="insider" onclick="showContent('insider')">Insider Threat</div>
+        <div id="scada" onclick="showContent('scada')">SCADA Threat</div>
+        <div id="hw" onclick="showContent('hw')">H/W Threat</div>
+    </div>
+    <div id="content" class="content">
+        <div id="apt-content" style="display: flex;">
+            <div class="bubble-container">
+                <div class="bubble A">A
+                    <div class="sub-bubble sub-A1">A1</div>
+                    <div class="sub-bubble sub-A2">A2</div>
+                    <div class="sub-bubble sub-A3">A3</div>
+                    <div class="sub-bubble sub-A4">A4</div>
+                </div>
+                <div class="bubble B">B</div>
+                <div class="bubble C">C</div>
+                <div class="bubble D">D</div>
+                <div class="bubble E">E</div>
+                <div class="bubble F">F</div>
+                <div class="bubble G">G</div>
+                <div class="bubble H">H</div>
+                <div class="bubble I">I</div>
+                <div class="bubble J">J</div>
+                <div class="bubble K">K</div>
+                <div class="bubble L">L</div>
+                <div class="bubble M">M</div>
+                <div class="bubble N">N</div>
+                <div class="bubble O">O</div>
+                <div class="bubble P">P</div>
+                <div class="bubble Q">Q</div>
+                <div class="bubble R">R</div>
+                <div class="bubble S">S</div>
+                <div class="bubble T">T</div>
+                <div class="bubble U">U</div>
+                <div class="bubble V">V</div>
+                <div class="bubble W">W</div>
+                <div class="bubble X">X</div>
+            </div>
+        </div>
+        <div id="insider-content" style="display:none;">
+            Insider Threat Content
+        </div>
+        <div id="scada-content" style="display:none;">
+            SCADA Threat Content
+        </div>
+        <div id="hw-content" style="display:none;">
+            H/W Threat Content
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.bubble').forEach(bubble => {
+            bubble.addEventListener('click', () => {
+                bubble.querySelectorAll('.sub-bubble').forEach(subBubble => {
+                    if (subBubble.style.display === 'flex') {
+                        subBubble.style.display = 'none';
+                    } else {
+                        subBubble.style.display = 'flex';
+                    }
+                });
+            });
+        });
+
+        function showContent(tab) {
+            console.log(tab);
+            document.querySelectorAll('.taskbar div').forEach(div => div.classList.remove('selected'));
+            document.querySelectorAll('.content div').forEach(div => div.style.display = 'none');
+            document.getElementById(tab).classList.add('selected');
+            document.getElementById(tab + '-content').style.display = 'block';
+            // Reset the sub-bubbles display when switching to "apt" content
+            if (tab != 'apt') {
+                document.querySelectorAll('.sub-bubble').forEach(subBubble => {
+                    subBubble.style.display = 'none';
+                });
+            }
+            else{
+                document.querySelectorAll('.sub-bubble').forEach(subBubble => {
+                    subBubble.style.display = 'block';
+                });
+            }
+        }
+    </script>
+</body>
+</html>
